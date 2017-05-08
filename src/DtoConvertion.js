@@ -325,4 +325,6 @@ DtoConvertion.METHOD_GET = METHOD_GET;
 DtoConvertion.METHOD_CREATE = METHOD_CREATE;
 DtoConvertion.METHOD_REMOVE = METHOD_REMOVE;
 
-module.exports = exports = new DtoConvertion();
+const dtoConverion = new DtoConvertion();
+kv.register('dtoConvertion', dtoConverion);
+module.exports = exports = dtoConverion;

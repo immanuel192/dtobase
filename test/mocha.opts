@@ -1,0 +1,5 @@
+--recursive
+--colors
+--check-leaks
+--reporter spec
+--require src/index.js
