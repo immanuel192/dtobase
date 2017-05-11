@@ -8,6 +8,14 @@ const kvCol = {};
  * @class MemStore
  */
 class MemStore {
+
+    remove(key) {
+        if (Object.prototype.hasOwnProperty.call(kvCol, key)) {
+            delete kvCol[key];
+        }
+        return null;
+    }
+
     /**
      * Register object with a name
      *
