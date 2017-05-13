@@ -1,15 +1,16 @@
 'use strict';
-
+const MemStore1 = require('../src/MemStore');
+const MemStore2 = require('../src/MemStore');
 const assert = require('assert');
 
 describe('#MemStore - DI', () => {
     let kv = null;
     before(() => {
-        kv = require('../src/MemStore');
+        kv = MemStore1;
     });
 
     it('Should be registered as singleton object', () => {
-        const kv2 = require('../src/MemStore');
+        const kv2 = MemStore2;
         assert.deepEqual(kv2, kv);
     });
 
@@ -26,15 +27,42 @@ describe('#MemStore - DI', () => {
     });
 
     it('should return undefined when we resolve object which is not registered', () => {
-        let t = kv.resolve('test1123432423');
+        const t = kv.resolve('test1123432423');
         assert.deepEqual(t, undefined);
     });
 
     it('should replace the registered', () => {
-        let expectObject = { a: 1 };
-        let expectObject2 = { a: 1 };
+        const expectObject = { a: 1 };
+        const expectObject2 = { a: 1 };
         kv.register('myObj123', expectObject);
         kv.register('myObj123', expectObject2);
         assert.notEqual(kv.resolve('myObj123'), expectObject);
+    });
+
+    describe('Dto', () => {
+        const type = 'myType';
+        const subtype = 'mySubType';
+        const actualInp = 123;
+
+        it('should register dto with correct key', () => {
+            const expectKey = `dto-${type}-${subtype}`;
+            kv.registerDto(type, subtype, actualInp);
+            assert.strictEqual(kv.resolve(expectKey), actualInp);
+        });
+
+        it('should register dto with correct key', () => {
+            kv.registerDto(type, subtype, actualInp);
+            assert.strictEqual(kv.resolveDto(type, subtype), actualInp);
+        });
+    });
+
+    describe('remove', () => {
+        it('should remove key', () => {
+            const actualInp = 123;
+            const key = 'myKey123';
+            kv.register(key, actualInp);
+            kv.remove(key);
+            assert.strictEqual(kv.resolve(key), undefined);
+        });
     });
 });
