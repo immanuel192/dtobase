@@ -1,3 +1,7 @@
+## dtobase
+> This library will provide you 2 tools:
+> - DtoConversion: to help you convert from ViewModel to Dto with strictly typed
+> - MemStore: in memory storage, to help you register your objects and later use in other part of your code
 # Data Transfer Object Convertion
 
 ## DtoConvertion

@@ -5,4 +5,5 @@ node_js:
 before_script:
 - npm install -g istanbul eslint-plugin-import eslint-config-airbnb-base eslint  codeclimate-test-reporter
 after_script:
+- npm run coverage
 - CODECLIMATE_REPO_TOKEN=562ee8b662e3aa93655d789d202544403d19e8b201cb3b744b219655cbe15ccd codeclimate-test-reporter < coverage/lcov.info
