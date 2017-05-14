@@ -122,12 +122,15 @@ class FakeSchemaDto extends BaseDto {
             dateField: {
                 type: Date
             },
-
             booleanField: {
                 type: Boolean
             },
             numberField: {
                 type: Number
+            },
+            integerField: {
+                type: Number,
+                integer: true
             },
             arrString: {
                 type: [String]
@@ -167,6 +170,10 @@ class FakeSchemaDto extends BaseDto {
             },
             multipleTypedArray: {
                 type: [FakeSchemaSubTypeDto, FakeSchemaSubTypeLevel2Dto]
+            },
+            symbolField: {
+                type: Symbol,
+                integer: true
             }
         });
     }
@@ -576,6 +583,24 @@ describe('BaseDto', () => {
                         assert.equal(err[0], 'maxField has invalid data');
                     });
             });
+
+            it('should return correct for datatype integer number when input is string', () => {
+                const actualValue = '2000';
+                const expectValue = 2000;
+                const fieldName = 'integerField';
+                return testValid(fieldName, actualValue, (newValue) => {
+                    assert.strictEqual(newValue, expectValue, `field ${fieldName} should be converted to ${expectValue}`);
+                }, payload);
+            });
+
+            it('should return undefined if input value if not integer for integer number field', () => {
+                const actualValue = '2000.03';
+                const expectValue = 2000;
+                const fieldName = 'integerField';
+                return testValid(fieldName, actualValue, (newValue) => {
+                    assert.strictEqual(newValue, undefined, `field ${fieldName} should be converted to ${expectValue}`);
+                }, payload);
+            });
         });
 
         describe('datatype Boolean', () => {
@@ -769,6 +794,18 @@ describe('BaseDto', () => {
                         assert.equal(result.multipleTypedArray[1] instanceof FakeSchemaSubTypeDto, true);
                     });
             });
+
+            it('should return undefined if input is not array', () => {
+                const inputObject = {
+                    _id: '123',
+                    multipleTypedArray: 123
+                };
+                return FakeSchemaDto
+                    .fromViewModel(inputObject)
+                    .then((result) => {
+                        assert.strictEqual(result.multipleTypedArray, undefined);
+                    });
+            });
         });
 
         describe('validate with action type', () => {
@@ -797,6 +834,17 @@ describe('BaseDto', () => {
                         assert.equal(err.length, 1);
                         assert.equal(err[0], 'field4 is required');
                     });
+            });
+        });
+
+        describe('Symbol type', () => {
+            it('should return undefined for Symbol field coz we dont support Symbol', () => {
+                const actualValue = '2000';
+                const expectValue = undefined;
+                const fieldName = 'symbolField';
+                return testValid(fieldName, actualValue, (newValue) => {
+                    assert.strictEqual(newValue, expectValue, `field ${fieldName} should be converted to ${expectValue}`);
+                }, payload);
             });
         });
     });

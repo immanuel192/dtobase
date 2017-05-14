@@ -30,10 +30,9 @@ class BaseDto {
     * @param {Object} extension
     */
     schema(extension) {
-        if (!extension) {
-            return;
+        if (_.isObjectLike(extension)) {
+            _.mergeWith(this, extension);
         }
-        _.mergeWith(this, extension);
     }
 
     /**
