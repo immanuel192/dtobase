@@ -34,7 +34,17 @@ class MyDto extends BaseDto {
                 min: 0, // min value, only available for Number
                 max: 0, // max value, only available for Number
                 minLength: 0, // min length, only available for String
-                maxLength: 0, // max length, only available for String
+                maxLength: 0, // max length, only available for String,
+                canFind: true,
+                canGet: true,
+                canCreate: true,
+                canPut: true, 
+                canPatch: true,
+                canRemove: true,
+                requiredUpdate: true, // for update / put / patch,
+                requiredPut: true,
+                requiredPatch: true,
+                requiredCreate: true
             },
             name: {
                 type: String,
