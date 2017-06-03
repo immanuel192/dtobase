@@ -205,6 +205,19 @@ describe('BaseDto', () => {
         });
     });
 
+    context('schema', () => {
+        it('should throw exception when calling schema with input not an object', () => {
+            const obj = new FakeSchemaSubTypeLevel2Dto();
+            try {
+                obj.schema('');
+                throw new Error('calling schema with empty string succcessfully');
+            }
+            catch (err) {
+                assert.equal(err.message, 'Schema should be an object');
+            }
+        });
+    });
+
     describe('With Rest Methods', () => {
         function testCastViewModelByMethod(fieldName, actualValue, method, action) {
             const inputObject = _.extend({

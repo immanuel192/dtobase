@@ -3,6 +3,25 @@ const MemStore1 = require('../src/MemStore');
 const MemStore2 = require('../src/MemStore');
 const assert = require('assert');
 
+class DtoClass {
+    static get dtoType() {
+        return 'myDtoType';
+    }
+
+    static get dtoSubType() {
+        return 'myDtoSubType';
+    }
+}
+
+class DtoClassWithoutSubType {
+    static get dtoType() {
+        return 'myDtoType';
+    }
+}
+
+class BadDtoClass {
+}
+
 describe('#MemStore - DI', () => {
     let kv = null;
     before(() => {
@@ -54,22 +73,36 @@ describe('#MemStore - DI', () => {
             kv.registerDto(type, subtype, actualInp);
             assert.strictEqual(kv.resolveDto(type, subtype), actualInp);
         });
-    });
 
-    describe('remove', () => {
-        it('should return true if remove existing key', () => {
-            const actualInp = 123;
-            const key = 'myKey123';
-            kv.register(key, actualInp);
-            const res = kv.remove(key);
-            assert.strictEqual(kv.resolve(key), undefined);
-            assert.equal(res, true);
-        });
+        describe('registerDto overloading registration', () => {
+            it('should register with 2 parameters and set subtype as empty by default', () => {
+                const expectKey = `dto-${type}-`;
+                kv.registerDto(type, actualInp);
+                assert.strictEqual(kv.resolve(expectKey), actualInp);
+            });
 
-        it('should return null if remove non-exist key', () => {
-            const key = 'myKey12343242342';
-            const res = kv.remove(key);
-            assert.strictEqual(res, null);
+            it('should register dto class by reading dtoType and dtoSubType statically from class', () => {
+                const expectKey = 'dto-myDtoType-myDtoSubType';
+                kv.registerDto(DtoClass);
+                assert.strictEqual(kv.resolve(expectKey), DtoClass);
+            });
+
+            it('should ignore dtoSubType when registering dtoClass', () => {
+                const expectKey = 'dto-myDtoType-';
+                kv.registerDto(DtoClassWithoutSubType);
+                assert.strictEqual(kv.resolve(expectKey), DtoClassWithoutSubType);
+            });
+
+            it('should throw exception if can not recognize dto', () => {
+                try {
+                    kv.registerDto(BadDtoClass);
+                    throw new Error('kv.registerDto can register bad dto format');
+                }
+                catch (err) {
+                    const expectMessage = 'Can not recognize Dto format';
+                    assert.equal(err.message, expectMessage);
+                }
+            });
         });
     });
 });

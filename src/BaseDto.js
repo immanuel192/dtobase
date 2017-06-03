@@ -31,8 +31,10 @@ class BaseDto {
     */
     schema(extension) {
         if (_.isObjectLike(extension)) {
-            _.mergeWith(this, extension);
+            return _.mergeWith(this, extension);
         }
+
+        throw new Error('Schema should be an object');
     }
 
     /**

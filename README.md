@@ -6,8 +6,38 @@
 > This library will provide you 2 tools:
 > - DtoConversion: to help you convert from ViewModel to Dto with strictly typed
 > - MemStore: in memory storage, to help you register your objects and later use in other part of your code
-# Data Transfer Object Convertion
 
+
+## Changes log
+### v1.0.1
+- MemStore: remove function `remove`
+- MemStore: add overloading for function `registerDto`
+```javascript
+
+class DtoClass extends BaseDto{
+    constructor() {
+        super();
+    }
+
+    static get dtoType() {
+        return 'myDtoType';
+    }
+
+    static get dtoSubType() {
+        return 'myDtoSubType';
+    }
+}
+
+const instance = new MemStore();
+
+instance.registerDto('myDtoType', 'myDtoSubType', DtoClass); // Explicity register dto
+
+instance.registerDto('myDtoType', DtoClass); // Explicity register dto with subtype = ''
+
+instance.registerDto(DtoClass); // Implicit register Dto from it class
+```
+
+# Data Transfer Object Convertion
 ## DtoConvertion
 
 Sample dto

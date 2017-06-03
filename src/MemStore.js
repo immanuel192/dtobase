@@ -46,7 +46,7 @@ class MemStore {
         }
         if (args.length === 1 && args[0].dtoType) {
             const myClass = args[0];
-            return this.register(`dto-${myClass.dtoType}-${myClass.dtoSubType}`, myClass);
+            return this.register(`dto-${myClass.dtoType}-${myClass.dtoSubType || ''}`, myClass);
         }
         throw new Error('Can not recognize Dto format');
     }
