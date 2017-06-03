@@ -8,15 +8,6 @@ const kvCol = {};
  * @class MemStore
  */
 class MemStore {
-
-    remove(key) {
-        if (Object.prototype.hasOwnProperty.call(kvCol, key)) {
-            delete kvCol[key];
-            return true;
-        }
-        return null;
-    }
-
     /**
      * Register object with a name
      *
@@ -46,11 +37,21 @@ class MemStore {
      *
      * @memberof MemStore
      */
-    registerDto(type, subtype, obj) {
-        this.register(`dto-${type}-${subtype}`, obj);
+    registerDto(...args) {
+        if (args.length === 3) {
+            return this.register(`dto-${args[0]}-${args[1]}`, args[2]);
+        }
+        if (args.length === 2) {
+            return this.register(`dto-${args[0]}-`, args[1]);
+        }
+        if (args.length === 1 && args[0].dtoType) {
+            const myClass = args[0];
+            return this.register(`dto-${myClass.dtoType}-${myClass.dtoSubType}`, myClass);
+        }
+        throw new Error('Can not recognize Dto format');
     }
 
-    resolveDto(type, subtype) {
+    resolveDto(type, subtype = '') {
         return this.resolve(`dto-${type}-${subtype}`);
     }
 }

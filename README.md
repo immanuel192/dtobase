@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/immanuel192/dtobase.png?branch=master)](https://travis-ci.org/immanuel192/dtobase/)
 [![Code Climate](https://codeclimate.com/github/immanuel192/dtobase.png)](https://codeclimate.com/github/immanuel192/dtobase)
 [![Test Coverage](https://codeclimate.com/github/immanuel192/dtobase/badges/coverage.svg)](https://codeclimate.com/github/immanuel192/dtobase/coverage)
-[![Dependency Status](https://david-dm.org/immanuel192/dtobase.png)](https://david-dm.org/immanuel192/dtobase)
 
 ## dtobase
 > This library will provide you 2 tools:
