@@ -381,7 +381,7 @@ describe('BaseDto', () => {
             return FakeSchemaDto
                 .fromViewModel(inputObject)
                 .then((result) => {
-                    return action(result[fieldName]);
+                    return action(result[fieldName], result);
                 });
         }
 
@@ -430,6 +430,15 @@ describe('BaseDto', () => {
                 const fieldName = 'fieldWithPersistentValue';
                 return testValid(fieldName, actualValue, (newValue) => {
                     assert.strictEqual(newValue, expectValue, `field ${fieldName} should be converted to ${expectValue}`);
+                }, payload);
+            });
+
+            it('should always return default persistent value in case if field missing', () => {
+                const expectValue = 15;
+                const actualValue = 'fdsfsdfsad';
+                const fieldName = 'fieldWithPersistentValue';
+                return testValid(`${fieldName}123`, actualValue, (newValue, res) => {
+                    assert.strictEqual(res[fieldName], expectValue, `field ${fieldName} should be converted to ${expectValue}`);
                 }, payload);
             });
         });
@@ -710,6 +719,7 @@ describe('BaseDto', () => {
                     field2: 123
                 };
                 const expectValue = FakeSchemaSubTypeDto.fromEntity(actualValue);
+                expectValue.type = 'fakesubtype1';
                 const fieldName = 'subTypeObjectField';
                 return testValid(fieldName, actualValue, (newValue) => {
                     assert.equal(newValue instanceof FakeSchemaSubTypeDto, true, 'Should be instance of FakeSchemaSubTypeDto');

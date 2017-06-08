@@ -250,63 +250,71 @@ class DtoConvertion {
 
         _.forOwn(schemaInstance, (fieldDef, fieldName) => {
             if (Object.prototype.hasOwnProperty.call(fieldDef, 'type')) {
-                if (fieldName in inputObj && canMatchType(fieldDef, method)) {
+                if (canMatchType(fieldDef, method)) {
                     // case 1: field value
                     if (Object.prototype.hasOwnProperty.call(fieldDef, 'value')) {
                         Object.assign(targetObj, {
                             [fieldName]: _.cloneDeep(fieldDef.value)
                         });
                     }
-                    else if (isDtoBased(fieldDef.type)) {
-                        // check for subtype based class
-                        return this.convertDtoClassDatatype({
-                            dataType: fieldDef.type,
-                            inputValue: inputObj[fieldName],
-                            errors,
-                            fieldName,
-                            targetObj,
-                            restMethod
-                        });
-                    }
-                    // Difference type of Datatype. All type should be Dto. Dont support for mixed type
-                    else if (_.isArray(fieldDef.type) && _.isArrayLike(inputObj[fieldName]) && isDtoBased(fieldDef.type[0])) {
-                        // && isDtoBased(fieldDef.type[0])
-                        // detect correct data type
-                        const subArrayFields = _.map(inputObj[fieldName], (v) => {
-                            const fieldType = detectSchemaInList(fieldDef.type, v);
-                            if (!fieldType) {
-                                throw new Error(`Could not detect model type of ${fieldName}`);
-                            }
+                    else if (fieldName in inputObj) {
+                        // case 1: field value
+                        if (Object.prototype.hasOwnProperty.call(fieldDef, 'value')) {
+                            Object.assign(targetObj, {
+                                [fieldName]: _.cloneDeep(fieldDef.value)
+                            });
+                        }
+                        else if (isDtoBased(fieldDef.type)) {
+                            // check for subtype based class
                             return this.convertDtoClassDatatype({
-                                dataType: fieldType,
-                                inputValue: v,
+                                dataType: fieldDef.type,
+                                inputValue: inputObj[fieldName],
                                 errors,
+                                fieldName,
+                                targetObj,
                                 restMethod
                             });
-                        });
-                        Object.assign(targetObj, {
-                            [fieldName]: subArrayFields
-                        });
+                        }
+                        // Difference type of Datatype. All type should be Dto. Dont support for mixed type
+                        else if (_.isArray(fieldDef.type) && _.isArrayLike(inputObj[fieldName]) && isDtoBased(fieldDef.type[0])) {
+                            // && isDtoBased(fieldDef.type[0])
+                            // detect correct data type
+                            const subArrayFields = _.map(inputObj[fieldName], (v) => {
+                                const fieldType = detectSchemaInList(fieldDef.type, v);
+                                if (!fieldType) {
+                                    throw new Error(`Could not detect model type of ${fieldName}`);
+                                }
+                                return this.convertDtoClassDatatype({
+                                    dataType: fieldType,
+                                    inputValue: v,
+                                    errors,
+                                    restMethod
+                                });
+                            });
+                            Object.assign(targetObj, {
+                                [fieldName]: subArrayFields
+                            });
+                        }
+                        else {
+                            convertPrimitiveDataType({
+                                fieldDef,
+                                fieldName,
+                                value: inputObj[fieldName],
+                                errors,
+                                targetObj,
+                                restMethod
+                            });
+                        }
                     }
-                    else {
-                        convertPrimitiveDataType({
-                            fieldDef,
-                            fieldName,
-                            value: inputObj[fieldName],
-                            errors,
-                            targetObj,
-                            restMethod
-                        });
+                    else if (
+                        fieldDef.required
+                        || (fieldDef.requiredUpdate && TYPE_UPDATE_VALIDATOR.indexOf(restMethod) >= 0)
+                        || (fieldDef.requiredPut && restMethod === METHOD_PUT)
+                        || (fieldDef.requiredPatch && restMethod === METHOD_PATCH)
+                        || (fieldDef.requiredCreate && restMethod === METHOD_CREATE)
+                    ) {
+                        errors.push(`${fieldName} is required`);
                     }
-                }
-                else if (
-                    fieldDef.required
-                    || (fieldDef.requiredUpdate && TYPE_UPDATE_VALIDATOR.indexOf(restMethod) >= 0)
-                    || (fieldDef.requiredPut && restMethod === METHOD_PUT)
-                    || (fieldDef.requiredPatch && restMethod === METHOD_PATCH)
-                    || (fieldDef.requiredCreate && restMethod === METHOD_CREATE)
-                ) {
-                    errors.push(`${fieldName} is required`);
                 }
             }
 
