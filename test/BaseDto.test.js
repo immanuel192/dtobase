@@ -375,9 +375,12 @@ describe('BaseDto', () => {
         };
 
         function testValid(fieldName, actualValue, action, testPayload) {
-            const inputObject = _.extend({
-                [fieldName]: actualValue
-            }, testPayload || {});
+            let inputObject = testPayload || {};
+            if (actualValue) {
+                inputObject = _.extend(inputObject, {
+                    [fieldName]: actualValue
+                });
+            }
             return FakeSchemaDto
                 .fromViewModel(inputObject)
                 .then((result) => {

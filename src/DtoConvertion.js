@@ -257,7 +257,7 @@ class DtoConvertion {
                             [fieldName]: _.cloneDeep(fieldDef.value)
                         });
                     }
-                    else if (fieldName in inputObj) {
+                    else if (fieldName in inputObj || fieldDef.default || fieldDef.value) {
                         // case 1: field value
                         if (Object.prototype.hasOwnProperty.call(fieldDef, 'value')) {
                             Object.assign(targetObj, {
