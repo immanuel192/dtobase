@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run eslint && npm run mocha",
     "mocha": "./node_modules/.bin/mocha",
-    "eslint": "eslint .",
+    "eslint": "eslint src/ test/",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha"
   },
   "repository": {
