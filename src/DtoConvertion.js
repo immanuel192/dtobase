@@ -322,7 +322,6 @@ class DtoConvertion {
         });
         return _.extend(schemaInstance, targetObj);
     }
-
 }
 
 DtoConvertion.TYPE_ANY = TYPE_ANY;
