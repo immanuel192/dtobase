@@ -1,6 +1,6 @@
 {
   "name": "dtobase",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Dto Convertion Base",
   "main": "src/index.js",
   "scripts": {

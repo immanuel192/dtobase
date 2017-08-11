@@ -9,6 +9,8 @@
 
 
 ## Changes log
+# v1.0.3
+- fix bug when parsing default value
 # v1.0.2
 - Fix bug when parsing default value
 ### v1.0.1
