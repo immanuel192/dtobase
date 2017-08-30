@@ -148,6 +148,12 @@ class FakeSchemaDto extends BaseDto {
                 type: Number,
                 default: 10
             },
+            fieldDefaultValueAsFunction: {
+                type: Number,
+                default: () => {
+                    return 10;
+                }
+            },
             fieldWithPersistentValue: {
                 type: Number,
                 value: 15
@@ -407,10 +413,19 @@ describe('BaseDto', () => {
         });
 
         describe('field with default value', () => {
-            it('should return default value of the field if no input value', () => {
+            it('should return default value as Primitive of the field if no input value', () => {
                 const expectValue = 10;
                 let actualValue;
                 const fieldName = 'fieldDefaultValue';
+                return testValid(fieldName, actualValue, (newValue) => {
+                    assert.strictEqual(newValue, expectValue, `field ${fieldName} should be converted to ${expectValue}`);
+                }, payload);
+            });
+
+            it('should return default value as function of the field if no input value', () => {
+                const expectValue = 10;
+                let actualValue;
+                const fieldName = 'fieldDefaultValueAsFunction';
                 return testValid(fieldName, actualValue, (newValue) => {
                     assert.strictEqual(newValue, expectValue, `field ${fieldName} should be converted to ${expectValue}`);
                 }, payload);

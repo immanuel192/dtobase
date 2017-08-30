@@ -9,6 +9,8 @@
 
 
 ## Changes log
+# v1.0.4
+- Support default value as a fuction
 # v1.0.3
 - fix bug when parsing default value
 # v1.0.2
@@ -94,6 +96,10 @@ class MyDto extends BaseDto {
                 * - should be registered with MemStore
                 */
                 type: [Type1, Type2, Type3]
+            },
+            fieldWithDefaultValueAsFunction: {
+                type: Number,
+                default: ()=>{ return 10; }
             }
         })
     }

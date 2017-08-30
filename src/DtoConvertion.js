@@ -147,8 +147,12 @@ function convertPrimitiveDataType(options) {
         options.errors.push(`${options.fieldName} is required`);
     }
     else {
+        let finalValue = result;
+        if (finalValue === undefined) {
+            finalValue = _.isFunction(options.fieldDef.default) ? options.fieldDef.default.call() : options.fieldDef.default;
+        }
         Object.assign(options.targetObj, {
-            [options.fieldName]: (result !== undefined ? result : options.fieldDef.default)
+            [options.fieldName]: finalValue
         });
     }
 }
